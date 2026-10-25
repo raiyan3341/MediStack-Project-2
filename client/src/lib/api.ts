@@ -1,14 +1,41 @@
 export const getApiBaseUrl = (): string => {
-  if (process.env.NEXT_PUBLIC_API_URL) {
-    return process.env.NEXT_PUBLIC_API_URL;
-  }
   if (typeof window !== 'undefined') {
     const isLocalhost =
       window.location.hostname === 'localhost' ||
       window.location.hostname === '127.0.0.1';
-    return isLocalhost ? 'http://localhost:5000/api' : `${window.location.origin}/api`;
+
+    // ONLY use localhost if browser is actually running on localhost
+    if (isLocalhost) {
+      return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+    }
+
+    // In production on any live domain (e.g. medistack2.vercel.app):
+    if (
+      process.env.NEXT_PUBLIC_API_URL &&
+      !process.env.NEXT_PUBLIC_API_URL.includes('localhost')
+    ) {
+      return process.env.NEXT_PUBLIC_API_URL;
+    }
+
+    return `${window.location.origin}/api`;
   }
+
+  // During build / SSR:
+  if (
+    process.env.NEXT_PUBLIC_API_URL &&
+    !process.env.NEXT_PUBLIC_API_URL.includes('localhost')
+  ) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+
   return 'https://medistack2.vercel.app/api';
+};
+
+export const getUrl = (endpoint: string): string => {
+  const baseUrl = getApiBaseUrl();
+  const cleanBase = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  return `${cleanBase}${cleanEndpoint}`;
 };
 
 export const API_BASE_URL = getApiBaseUrl();
@@ -33,7 +60,7 @@ export const apiRequest = async <T = any>(
     ...(options.headers || {}),
   };
 
-  const url = `${API_BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+  const url = getUrl(endpoint);
 
   try {
     const response = await fetch(url, {
