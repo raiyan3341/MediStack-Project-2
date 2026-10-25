@@ -131,8 +131,8 @@ export default function HomePage() {
             <div className="lg:col-span-5 flex justify-center lg:justify-end">
               <div className="relative w-full max-w-md h-72 sm:h-80 rounded-2xl overflow-hidden shadow-lg border-4 border-white bg-teal-100/50">
                 <img
-                  src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=800&auto=format&fit=crop&q=80"
-                  alt="Doctor with Stethoscope"
+                  src="/images/hero-doctor.jpg"
+                  alt="Healthcare Specialist with Supply Checklist"
                   className="w-full h-full object-cover object-top"
                 />
               </div>
