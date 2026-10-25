@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+*/node_modules/
+client/node_modules/
+server/node_modules/
+
+# Next.js Build Outputs
+.next/
+client/.next/
+out/
+client/out/
+
+# Server Build Outputs
+dist/
+server/dist/
+build/
+*.tsbuildinfo
+
+# Sensitive Environment Variables & Passwords (NEVER commit secrets!)
+.env
+.env*.local
+.env.local
+.env.production
+.env.development
+client/.env.local
+server/.env
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# OS / Editor Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

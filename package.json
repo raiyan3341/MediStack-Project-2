@@ -1,0 +1,14 @@
+{
+  "name": "medistock-workspace",
+  "version": "1.0.0",
+  "description": "MediStock — Healthcare Supply & Inventory Management Platform",
+  "scripts": {
+    "server:install": "cd server && npm install",
+    "client:install": "cd client && npm install",
+    "install:all": "cd server && npm install && cd ../client && npm install",
+    "server:dev": "cd server && npm run dev",
+    "client:dev": "cd client && npm run dev",
+    "server:seed": "cd server && npm run seed"
+  }
+}
+
