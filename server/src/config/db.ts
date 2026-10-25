@@ -1,16 +1,32 @@
 import mongoose from 'mongoose';
 
-export const connectDB = async (): Promise<void> => {
+let isConnecting = false;
+
+export const connectDB = async (): Promise<boolean> => {
+  if (mongoose.connection.readyState === 1) {
+    return true;
+  }
+
+  if (isConnecting) {
+    return false;
+  }
+
+  const mongoUri =
+    process.env.MONGODB_URI ||
+    'mongodb+srv://Medistack33:lqO7XGHxRLsVA55G@cluster0.dddbozq.mongodb.net/medistock?retryWrites=true&w=majority';
+
   try {
-    const mongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/medistock';
+    isConnecting = true;
     await mongoose.connect(mongoUri, {
       serverSelectionTimeoutMS: 5000,
     });
-    console.log(`[Database] MongoDB Connected successfully to: ${mongoose.connection.host}/${mongoose.connection.name}`);
+    isConnecting = false;
+    console.log(`[Database] MongoDB Connected: ${mongoose.connection.host}/${mongoose.connection.name}`);
+    return true;
   } catch (error: any) {
-    console.warn(`[Database Warning] Could not connect to MongoDB at ${process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/medistock'}`);
-    console.warn(`[Database Warning] Reason: ${error.message}`);
-    console.warn(`[Database Warning] Please ensure MongoDB is running locally or specify a valid MONGODB_URI in server/.env (e.g. MongoDB Atlas).`);
+    isConnecting = false;
+    console.warn(`[Database Warning] Could not connect to MongoDB: ${error.message}`);
+    return false;
   }
 };
 

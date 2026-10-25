@@ -9,6 +9,7 @@ import requestRoutes from './routes/requestRoutes.js';
 import bloodRoutes from './routes/bloodRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
+import { connectDB } from './config/db.js';
 
 export const createApp = (): Application => {
   const app = express();
@@ -57,6 +58,16 @@ export const createApp = (): Application => {
     next();
   });
 
+  // Ensure database is connected on requests
+  app.use(async (_req, _res, next) => {
+    try {
+      await connectDB();
+    } catch (e) {
+      // handled
+    }
+    next();
+  });
+
   // Health check
   app.get('/api/health', (_req: Request, res: Response) => {
     res.json({
@@ -85,4 +96,7 @@ export const createApp = (): Application => {
 
   return app;
 };
+
+const app = createApp();
+export default app;
 
