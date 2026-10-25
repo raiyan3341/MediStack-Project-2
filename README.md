@@ -90,25 +90,7 @@ npm run client:dev
 # Running on http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your web browser.
-
----
-
-## 🔑 Pre-Seeded Evaluation Accounts & Authentication
-
-You can sign in using **Email & Password** on `/login` with these pre-seeded accounts (or use the one-click autofill button beside each account on the sign-in screen):
-
-| Role | Email | Password | Description |
-| :--- | :--- | :--- | :--- |
-| **Platform Owner** | `owner@medistock.health` | `owner123456` | Full Super Admin & Role Governance |
-| **Supply Admin** | `admin@medistock.health` | `admin123456` | Sarah Ahmed (Products, Orders, Approvals) |
-| **Hospital Org** | `dhakacentral@medistock.health` | `hospital123456` | Dhaka Central Hospital (Approved, Restock) |
-| **Pharmacy Org** | `labaidpharmacy@medistock.health` | `pharma123456` | Labaid Care Pharmacy (Approved, Demands) |
-| **Normal User** | `user@medistock.health` | `user123456` | Ayesha Siddiqua (Voluntary Blood Donor) |
-
-You can also use the **Sign In with Google Account** button on `/login` to authenticate using your real Google identity via Firebase Authentication.
-
----
+--
 
 ## 📂 Project Architecture
 
