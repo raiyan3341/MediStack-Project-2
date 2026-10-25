@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Sidebar } from '../../../components/Sidebar';
-import { api } from '../../../lib/api';
+import { api, API_BASE_URL } from '../../../lib/api';
 import {
   BarChart3,
   Download,
@@ -51,7 +51,7 @@ export default function AdminReportsPage() {
     try {
       setIsExporting(true);
       const token = typeof window !== 'undefined' ? localStorage.getItem('medistock_token') : '';
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/admin/reports/export-csv`, {
+      const response = await fetch(`${API_BASE_URL}/admin/reports/export-csv`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
