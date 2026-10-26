@@ -2,7 +2,7 @@
   "name": "medistock-server",
   "version": "1.0.0",
   "description": "MediStock Healthcare Supply & Inventory Management API Backend",
-  "main": "src/server.ts",
+  "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "server:dev": "tsx watch src/server.ts",

@@ -69,25 +69,33 @@ export const createApp = (): Application => {
   });
 
   // Health check
-  app.get('/api/health', (_req: Request, res: Response) => {
+  const healthHandler = (_req: Request, res: Response) => {
     res.json({
       status: 'healthy',
       service: 'MediStock Healthcare Supply Management API',
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
     });
-  });
+  };
 
-  // Mount API Routes
-  app.use('/api/auth', authRoutes);
-  app.use('/api/categories', categoryRoutes);
-  app.use('/api/products', productRoutes);
-  app.use('/api/organizations', organizationRoutes);
-  app.use('/api/orders', orderRoutes);
-  app.use('/api/requests', requestRoutes);
-  app.use('/api/blood', bloodRoutes);
-  app.use('/api/admin', adminRoutes);
-  app.use('/api/notifications', notificationRoutes);
+  app.get('/api/health', healthHandler);
+  app.get('/health', healthHandler);
+
+  // Mount API Routes (support both /api/path and direct /path for Vercel rewrites)
+  const mountRoutes = (prefix: string) => {
+    app.use(`${prefix}/auth`, authRoutes);
+    app.use(`${prefix}/categories`, categoryRoutes);
+    app.use(`${prefix}/products`, productRoutes);
+    app.use(`${prefix}/organizations`, organizationRoutes);
+    app.use(`${prefix}/orders`, orderRoutes);
+    app.use(`${prefix}/requests`, requestRoutes);
+    app.use(`${prefix}/blood`, bloodRoutes);
+    app.use(`${prefix}/admin`, adminRoutes);
+    app.use(`${prefix}/notifications`, notificationRoutes);
+  };
+
+  mountRoutes('/api');
+  mountRoutes('');
 
   // 404 Handler
   app.use((_req: Request, res: Response) => {
@@ -98,5 +106,14 @@ export const createApp = (): Application => {
 };
 
 const app = createApp();
+
+// @ts-ignore
+if (typeof module !== 'undefined' && module.exports) {
+  // @ts-ignore
+  module.exports = app;
+  // @ts-ignore
+  module.exports.default = app;
+}
+
 export default app;
 

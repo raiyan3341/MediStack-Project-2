@@ -1,3 +1,29 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json"
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "client": {
+      "root": "client",
+      "framework": "nextjs"
+    },
+    "server": {
+      "root": "server",
+      "framework": "express",
+      "entrypoint": "dist/server.js",
+      "buildCommand": "npm run build"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": {
+        "service": "server"
+      }
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": {
+        "service": "client"
+      }
+    }
+  ]
 }
