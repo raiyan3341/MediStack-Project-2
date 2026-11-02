@@ -58,17 +58,7 @@ export const createApp = (): Application => {
     next();
   });
 
-  // Ensure database is connected on requests
-  app.use(async (_req, _res, next) => {
-    try {
-      await connectDB();
-    } catch (e) {
-      // handled
-    }
-    next();
-  });
-
-  // Health check
+  // Health check & Diagnostics (Independent of database)
   const healthHandler = (_req: Request, res: Response) => {
     res.json({
       status: 'healthy',
@@ -78,8 +68,46 @@ export const createApp = (): Application => {
     });
   };
 
+  const debugHandler = async (_req: Request, res: Response) => {
+    try {
+      const mongoUri = process.env.MONGODB_URI || 'default-fallback';
+      const safeUri = mongoUri.replace(/:([^:@]+)@/, ':****@');
+      let dbStatus = 'disconnected';
+      let dbError: string | null = null;
+      try {
+        const ok = await connectDB();
+        dbStatus = ok ? 'connected' : 'connection_failed';
+      } catch (e: any) {
+        dbError = e.message || String(e);
+      }
+
+      res.json({
+        status: 'debug_ok',
+        mongo_uri: safeUri,
+        db_status: dbStatus,
+        db_error: dbError,
+        environment: process.env.NODE_ENV || 'not set',
+        is_vercel: !!process.env.VERCEL,
+      });
+    } catch (fatal: any) {
+      res.status(500).json({ error: fatal.message });
+    }
+  };
+
   app.get('/api/health', healthHandler);
   app.get('/health', healthHandler);
+  app.get('/api/debug', debugHandler);
+  app.get('/debug', debugHandler);
+
+  // Ensure database is connected on resource requests
+  app.use(async (_req, _res, next) => {
+    try {
+      await connectDB();
+    } catch (e) {
+      console.warn('[DB Middleware Error]:', e);
+    }
+    next();
+  });
 
   // Mount API Routes (support both /api/path and direct /path for Vercel rewrites)
   const mountRoutes = (prefix: string) => {
@@ -100,6 +128,16 @@ export const createApp = (): Application => {
   // 404 Handler
   app.use((_req: Request, res: Response) => {
     res.status(404).json({ success: false, message: 'Resource or API route not found.' });
+  });
+
+  // Global Error Handler
+  app.use((err: any, _req: Request, res: Response, _next: any) => {
+    console.error('[Unhandled Express Error]:', err);
+    res.status(500).json({
+      success: false,
+      message: err.message || 'Internal Server Error',
+      error: err.name || 'Error',
+    });
   });
 
   return app;

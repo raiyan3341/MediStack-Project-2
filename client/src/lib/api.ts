@@ -68,7 +68,16 @@ export const apiRequest = async <T = any>(
       headers,
     });
 
-    const data = await response.json();
+    const text = await response.text();
+    let data: any;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = {
+        success: false,
+        message: text.slice(0, 200) || `API request failed with status ${response.status}`,
+      };
+    }
 
     if (!response.ok) {
       throw new Error(data.message || `API request failed with status ${response.status}`);
