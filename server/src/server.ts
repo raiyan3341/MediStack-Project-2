@@ -6,8 +6,16 @@ import { connectDB } from './config/db.js';
 
 const PORT = process.env.PORT || 5000;
 
-// When running as a standalone server (local or Docker/Render)
-if (!process.env.VERCEL) {
+const isServerless =
+  process.env.VERCEL === '1' ||
+  !!process.env.VERCEL ||
+  !!process.env.VERCEL_ENV ||
+  !!process.env.VERCEL_REGION ||
+  !!process.env.NOW_REGION ||
+  process.env.NODE_ENV === 'production';
+
+// Only listen on port when running locally in development
+if (!isServerless) {
   connectDB().then(() => {
     app.listen(PORT, () => {
       console.log(`====================================================`);

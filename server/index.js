@@ -1,3 +1,1 @@
-const app = require('./dist/server.js');
-module.exports = app.default || app;
-
+module.exports = require('./server.js');
