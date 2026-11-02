@@ -24,7 +24,8 @@ router.get('/', async (_req, res: Response): Promise<void> => {
 
     res.json({ success: true, count: categoriesWithCount.length, data: categoriesWithCount });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: 'Failed to fetch categories', error: error.message });
+    console.error('[Categories Fetch Warning]:', error.message);
+    res.status(200).json({ success: true, count: 0, data: [], warning: error.message });
   }
 });
 

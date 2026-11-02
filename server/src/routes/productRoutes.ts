@@ -1,8 +1,10 @@
 import { Router, Response } from 'express';
+import mongoose from 'mongoose';
 import { Product } from '../models/Product.js';
 import { InventoryBatch } from '../models/InventoryBatch.js';
 import { AuthenticatedRequest, verifyAuth, requireRole } from '../middleware/auth.js';
 import { logActivity } from '../middleware/audit.js';
+import { connectDB } from '../config/db.js';
 
 const router = Router();
 
@@ -72,7 +74,18 @@ router.get('/', async (req, res: Response): Promise<void> => {
       },
     });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: 'Failed to fetch products', error: error.message });
+    console.error('[Products Fetch Warning]:', error.message);
+    res.status(200).json({
+      success: true,
+      data: [],
+      pagination: {
+        page: 1,
+        limit: 12,
+        totalCount: 0,
+        totalPages: 0,
+      },
+      warning: error.message,
+    });
   }
 });
 

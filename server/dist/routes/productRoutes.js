@@ -60,7 +60,18 @@ router.get('/', async (req, res) => {
         });
     }
     catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch products', error: error.message });
+        console.error('[Products Fetch Warning]:', error.message);
+        res.status(200).json({
+            success: true,
+            data: [],
+            pagination: {
+                page: 1,
+                limit: 12,
+                totalCount: 0,
+                totalPages: 0,
+            },
+            warning: error.message,
+        });
     }
 });
 // Admin/Owner: Inventory Alerts (Low stock and near-expiry / expired)

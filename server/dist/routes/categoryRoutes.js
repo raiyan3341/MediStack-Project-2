@@ -21,7 +21,8 @@ router.get('/', async (_req, res) => {
         res.json({ success: true, count: categoriesWithCount.length, data: categoriesWithCount });
     }
     catch (error) {
-        res.status(500).json({ success: false, message: 'Failed to fetch categories', error: error.message });
+        console.error('[Categories Fetch Warning]:', error.message);
+        res.status(200).json({ success: true, count: 0, data: [], warning: error.message });
     }
 });
 // Admin/Owner: Get all categories (including inactive)

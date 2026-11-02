@@ -1,5 +1,8 @@
 import mongoose from 'mongoose';
 
+// Disable Mongoose command buffering in serverless to prevent request hanging/timeout
+mongoose.set('bufferCommands', false);
+
 let cachedPromise: Promise<typeof mongoose> | null = null;
 
 export const connectDB = async (): Promise<boolean> => {
@@ -13,7 +16,8 @@ export const connectDB = async (): Promise<boolean> => {
 
   if (!cachedPromise) {
     cachedPromise = mongoose.connect(mongoUri, {
-      serverSelectionTimeoutMS: 5000,
+      serverSelectionTimeoutMS: 3000,
+      connectTimeoutMS: 3000,
     });
   }
 
