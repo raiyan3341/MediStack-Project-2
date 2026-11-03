@@ -12,8 +12,7 @@ const isServerless = process.env.VERCEL === '1' ||
     !!process.env.VERCEL ||
     !!process.env.VERCEL_ENV ||
     !!process.env.VERCEL_REGION ||
-    !!process.env.NOW_REGION ||
-    process.env.NODE_ENV === 'production';
+    !!process.env.NOW_REGION;
 // Only listen on port when running locally in development
 if (!isServerless) {
     (0, db_js_1.connectDB)().then(() => {

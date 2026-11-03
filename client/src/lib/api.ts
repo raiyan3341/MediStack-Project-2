@@ -4,12 +4,12 @@ export const getApiBaseUrl = (): string => {
       window.location.hostname === 'localhost' ||
       window.location.hostname === '127.0.0.1';
 
-    // ONLY use localhost if browser is actually running on localhost
+    // When browser is running locally, ALWAYS use local backend to avoid CORS/remote dependency
     if (isLocalhost) {
-      return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      return 'http://localhost:5000/api';
     }
 
-    // In production on any live domain (e.g. medistack2.vercel.app):
+    // In production on live domain (e.g. medistack2.vercel.app):
     if (
       process.env.NEXT_PUBLIC_API_URL &&
       !process.env.NEXT_PUBLIC_API_URL.includes('localhost')
@@ -28,7 +28,7 @@ export const getApiBaseUrl = (): string => {
     return process.env.NEXT_PUBLIC_API_URL;
   }
 
-  return 'https://medistack2.vercel.app/api';
+  return 'http://localhost:5000/api';
 };
 
 export const getUrl = (endpoint: string): string => {
